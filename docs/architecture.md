@@ -1,0 +1,32 @@
+# Log Management System Architecture
+
+## Overview
+ระบบจัดการ Log แบบ Centralized รองรับการทำงานทั้งรูปแบบ Appliance และ SaaS โดยเน้นความง่ายในการติดตั้ง (Containerized) และประสิทธิภาพในการค้นหา
+
+## Technology Stack
+- **Frontend:** React (Vite) + TailwindCSS + Recharts
+- **Backend:** Node.js (Express) + UDP Syslog Server
+- **Database:** PostgreSQL (JSONB Storage)
+- **Infrastructure:** Docker Compose
+
+## Data Flow Diagram
+
+[ Source: Firewall ] --(UDP 514)--> [ Backend: Ingestor ] --(Normalize)--> [ PostgreSQL ]
+                                            ^
+[ Source: API/App ] --(HTTP POST)-----------|
+                                            |
+[ User: Dashboard ] --(HTTP GET)------------+
+
+## Database Schema (Key Design)
+เราใช้ **JSONB** ใน PostgreSQL เพื่อความยืดหยุ่นในการเก็บ Log จากแหล่งที่ต่างกันโดยไม่ต้องแก้ Table Structure บ่อยๆ
+
+| Column | Type | Description |
+|--------|------|-------------|
+| timestamp | TIMESTAMPTZ | เวลาที่เกิดเหตุการณ์ (Indexed) |
+| tenant_id | VARCHAR | รหัสลูกค้า (สำหรับ Multi-tenant Isolation) |
+| source | VARCHAR | แหล่งที่มา (aws, firewall, api) |
+| metadata | JSONB | ข้อมูลดิบอื่นๆ ทั้งหมด (Indexed with GIN) |
+
+## Security
+- **Multi-tenancy:** แยกข้อมูลระดับ Row-level (Software Isolation)
+- **Validation:** ตรวจสอบ JSON Schema ก่อนบันทึก

@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # 1. Database
+  db:
+    image: postgres:15-alpine
+    container_name: log-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: logplatform
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - log-net
+
+  # 2. Backend
+  backend:
+    build: ./backend
+    container_name: log-backend
+    ports:
+      - "3000:3000"
+      - "514:5140/udp"
+    environment:
+      DATABASE_URL: postgres://admin:password123@db:5432/logplatform
+    depends_on:
+      - db
+    networks:
+      - log-net
+
+  # 3. Frontend
+  frontend:
+    build: ./frontend
+    container_name: log-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - log-net
+
+volumes:
+  pg_data:
+
+networks:
+  log-net:
