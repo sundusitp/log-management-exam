@@ -10,12 +10,41 @@
 - **Infrastructure:** Docker Compose
 
 ## Data Flow Diagram
+graph TD
+    subgraph Client Side
+        User[👤 User / Admin]
+        Browser[💻 Dashboard (React)]
+    end
 
-[ Source: Firewall ] --(UDP 514)--> [ Backend: Ingestor ] --(Normalize)--> [ PostgreSQL ]
-                                            ^
-[ Source: API/App ] --(HTTP POST)-----------|
-                                            |
-[ User: Dashboard ] --(HTTP GET)------------+
+    subgraph "SaaS / Cloud Layer"
+        Tunnel[🌐 Secure Tunnel (Serveo/Ngrok)]
+    end
+
+    subgraph "Appliance (Docker Container)"
+        Frontend[🎨 Frontend (Nginx)]
+        Backend[⚙️ Backend API (Node.js)]
+        DB[(🗄️ PostgreSQL JSONB)]
+    end
+
+    subgraph "Data Sources"
+        Firewall[🔥 Firewall (Syslog UDP)]
+        AWS[☁️ AWS / API (HTTP)]
+    end
+
+    %% Flow Connections
+    User -->|HTTPS| Tunnel
+    Tunnel -->|Forward 80| Frontend
+    Frontend -->|API Req| Backend
+    Backend -->|Query/Store| DB
+
+    %% Ingestion Flow
+    Firewall -->|UDP 5140| Backend
+    AWS -->|POST /ingest| Backend
+
+    %% Styling
+    style DB fill:#f9f,stroke:#333,stroke-width:2px
+    style Backend fill:#bbf,stroke:#333,stroke-width:2px
+    style Tunnel fill:#dfd,stroke:#333,stroke-width:2px
 
 ## Database Schema (Key Design)
 เราใช้ **JSONB** ใน PostgreSQL เพื่อความยืดหยุ่นในการเก็บ Log จากแหล่งที่ต่างกันโดยไม่ต้องแก้ Table Structure บ่อยๆ
