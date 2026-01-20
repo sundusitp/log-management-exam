@@ -17,8 +17,6 @@
 
 ## Data Flow Diagram
 
-> GitHub รองรับ Mermaid โดยตรง จึงแสดงผลเป็นแผนภาพอัตโนมัติ
-
 ### 1. System Architecture Flow
 
 ```mermaid
@@ -169,7 +167,3 @@ docker compose up -d
 * Dashboard Custom Widget
 
 ---
-
-## License
-
-MIT License
