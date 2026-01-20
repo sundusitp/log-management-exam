@@ -10,23 +10,24 @@
 - **Infrastructure:** Docker Compose
 
 ## Data Flow Diagram
+```mermaid
 graph TD
-    subgraph Client Side
+    subgraph Client_Side [Client Side]
         User[👤 User / Admin]
         Browser[💻 Dashboard (React)]
     end
 
-    subgraph "SaaS / Cloud Layer"
+    subgraph SaaS_Layer [SaaS / Cloud Layer]
         Tunnel[🌐 Secure Tunnel (Serveo/Ngrok)]
     end
 
-    subgraph "Appliance (Docker Container)"
+    subgraph Appliance [Appliance (Docker Container)]
         Frontend[🎨 Frontend (Nginx)]
         Backend[⚙️ Backend API (Node.js)]
         DB[(🗄️ PostgreSQL JSONB)]
     end
 
-    subgraph "Data Sources"
+    subgraph Data_Sources [Data Sources]
         Firewall[🔥 Firewall (Syslog UDP)]
         AWS[☁️ AWS / API (HTTP)]
     end
