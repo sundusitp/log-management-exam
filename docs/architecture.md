@@ -10,26 +10,27 @@
 - **Infrastructure:** Docker Compose
 
 ## Data Flow Diagram
+
 ```mermaid
 graph TD
     subgraph Client_Side [Client Side]
-        User[👤 User / Admin]
-        Browser[💻 Dashboard (React)]
+        User["👤 User / Admin"]
+        Browser["💻 Dashboard (React)"]
     end
 
     subgraph SaaS_Layer [SaaS / Cloud Layer]
-        Tunnel[🌐 Secure Tunnel (Serveo/Ngrok)]
+        Tunnel["🌐 Secure Tunnel (Serveo/Ngrok)"]
     end
 
     subgraph Appliance [Appliance (Docker Container)]
-        Frontend[🎨 Frontend (Nginx)]
-        Backend[⚙️ Backend API (Node.js)]
-        DB[(🗄️ PostgreSQL JSONB)]
+        Frontend["🎨 Frontend (Nginx)"]
+        Backend["⚙️ Backend API (Node.js)"]
+        DB[("🗄️ PostgreSQL JSONB")]
     end
 
     subgraph Data_Sources [Data Sources]
-        Firewall[🔥 Firewall (Syslog UDP)]
-        AWS[☁️ AWS / API (HTTP)]
+        Firewall["🔥 Firewall (Syslog UDP)"]
+        AWS["☁️ AWS / API (HTTP)"]
     end
 
     %% Flow Connections
