@@ -7,7 +7,7 @@
 - **Frontend:** React (Vite) + TailwindCSS + Recharts
 - **Backend:** Node.js (Express) + UDP Syslog Server
 - **Database:** PostgreSQL (JSONB Storage)
-- **Infrastructure:** Docker Compose
+- **Infrastructure:** Docker Compose + Ngrok/Serveo
 
 ## Data Flow Diagram
 
@@ -46,8 +46,8 @@ graph TD
     %% Styling
     style DB fill:#f9f,stroke:#333,stroke-width:2px
     style Backend fill:#bbf,stroke:#333,stroke-width:2px
-    style Tunnel fill:#dfd,stroke:#333,stroke-width:2px```
-
+    style Tunnel fill:#dfd,stroke:#333,stroke-width:2px
+    
 ## Database Schema (Key Design)
 เราใช้ **JSONB** ใน PostgreSQL เพื่อความยืดหยุ่นในการเก็บ Log จากแหล่งที่ต่างกันโดยไม่ต้องแก้ Table Structure บ่อยๆ
 
