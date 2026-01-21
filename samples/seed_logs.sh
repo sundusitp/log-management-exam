@@ -2,29 +2,59 @@
 
 API_URL="http://localhost:3000/ingest"
 
-echo "Log Seeder: Sending sample logs to $API_URL..."
+echo "🚀 Starting Log Seeder: Sending logs to $API_URL..."
 
-# 1. Normal Usage (Office 365)
-echo "Sending Normal Logs..."
+echo "☁️  Sending AWS CloudTrail Logs..."
 curl -s -X POST $API_URL -H "Content-Type: application/json" \
--d '{"tenant": "tenant-A", "source": "office365", "event_type": "file_accessed", "user": "somchai", "severity": 1}' > /dev/null
+-d '{
+  "tenant": "tenant-A",
+  "source": "aws",
+  "event_type": "ConsoleLogin",
+  "user": "admin",
+  "severity": 1,
+  "metadata": {"region": "ap-southeast-1", "service": "iam"}
+}' > /dev/null
 
-# 2. Critical Security Alert (Firewall)
-echo "Sending Critical Alert (Malware)..."
+echo "🔐 Sending Windows AD (Login Failed Attack)..."
+for i in {1..3}; do
+  curl -s -X POST $API_URL -H "Content-Type: application/json" \
+  -d '{
+    "tenant": "tenant-A",
+    "source": "ad",
+    "event_type": "login_failed",
+    "event_id": 4625,
+    "user": "hacker",
+    "severity": 8,
+    "metadata": {"workstation": "HR-PC-01", "ip": "192.168.1.100"}
+  }' > /dev/null
+done
+
+echo "🔥 Sending Firewall Critical Alert (Malware)..."
 curl -s -X POST $API_URL -H "Content-Type: application/json" \
--d '{"tenant": "tenant-A", "source": "firewall", "event_type": "malware_detected", "user": "system", "severity": 9, "metadata": {"ip": "192.168.1.50", "action": "block"}}' > /dev/null
+-d '{
+  "tenant": "tenant-A",
+  "source": "firewall",
+  "event_type": "malware_detected",
+  "user": "system",
+  "severity": 9,
+  "metadata": {"ip": "10.0.1.50", "action": "block", "threat": "Trojan.Win32"}
+}' > /dev/null
 
-# 3. Multi-tenant Data (Tenant B)
-echo "Sending Tenant B Logs..."
+echo "📧 Sending Office 365 Logs..."
 curl -s -X POST $API_URL -H "Content-Type: application/json" \
--d '{"tenant": "tenant-B", "source": "aws", "event_type": "console_login", "user": "devops", "severity": 2}' > /dev/null
+-d '{
+  "tenant": "tenant-A",
+  "source": "m365",
+  "event_type": "FileAccessed",
+  "user": "somchai@company.com",
+  "severity": 1,
+  "metadata": {"file": "salary_report.xlsx"}
+}' > /dev/null
 
-# 4. Bulk Traffic (For Graph)
-echo "Sending Bulk Traffic..."
+echo "📈 Sending Bulk Traffic (API Requests)..."
 for i in {1..10}; do
   curl -s -X POST $API_URL -H "Content-Type: application/json" \
   -d '{"tenant": "tenant-A", "source": "api", "event_type": "api_request", "user": "bot_'$i'", "severity": 1}' > /dev/null
-  # sleep 0.1
 done
 
-echo "\n✅ Done! Check the Dashboard."
+echo "\n✅ Done! Data Ingested from 4 Sources (AWS, AD, Firewall, M365)."
